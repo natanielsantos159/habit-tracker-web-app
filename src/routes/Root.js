@@ -5,11 +5,11 @@ import { Outlet } from "react-router-dom";
 
 function Root() {
   return (
-    <div className='font-sans flex items-center flex-col mt-10 bg-[--tg-theme-bg-color]' >
+    <div className='font-sans flex items-center flex-col bg-[--tg-theme-bg-color] min-h-screen pb-10' >
       <header>
-        <img src={logo} className="logo" alt="logo" />
-        <Outlet />
+        <img src={logo} className="mt-10" alt="logo" height={200} width={200}/>
       </header>
+      <Outlet />
     </div>
   );
 }
