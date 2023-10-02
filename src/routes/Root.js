@@ -1,16 +1,22 @@
 import logo from '../assets/logo.png';
 import { Outlet } from "react-router-dom";
-
+import { Flex, Image } from '@chakra-ui/react';
 // const webApp = window.Telegram.WebApp;
 
 function Root() {
   return (
-    <div className='font-sans flex items-center flex-col bg-[--tg-theme-bg-color] min-h-screen pb-10' >
+    <Flex
+      flexDirection="column"
+      alignItems="center"
+      bg="var(--tg-theme-bg-color)"
+      minHeight="100vh"
+      paddingBottom="10"
+    >
       <header>
-        <img src={logo} className="mt-10" alt="logo" height={200} width={200}/>
+        <Image src={logo} marginTop="2.5rem" alt="logo" width={200} />
       </header>
       <Outlet />
-    </div>
+    </Flex>
   );
 }
 

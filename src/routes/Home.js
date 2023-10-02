@@ -1,6 +1,7 @@
 import React from 'react';
 import deleteIcon from '../assets/delete.png';
 import DayState from '../components/DayState';
+import { Grid, GridItem, Text, Box, Container, IconButton, Flex } from '@chakra-ui/react';
 
 function Home() {
   const habits = { 
@@ -25,54 +26,49 @@ function Home() {
       "2023-10-04": false,
       "2023-10-05": true,
     },
-    "Drink water1": {
-      "2023-10-01": true,
-      "2023-10-02": true,
-      "2023-10-03": true,
-      "2023-10-04": false,
-      "2023-10-05": true,
-    },
-    "Drink waterw": {
-      "2023-10-01": true,
-      "2023-10-02": true,
-      "2023-10-03": true,
-      "2023-10-04": false,
-      "2023-10-05": true,
-    }
   };
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
-    <main className="container relative flex flex-col gap-8 px-4 pt-16">
+    <Container marginTop="10">
       {habits === null ||
         (Object.keys(habits).length === 0 && (
-          <h1 className="mt-20 text-4xl font-light text-[--tg-theme-hint-color] font-display text-center">No habits yet.</h1>
+          <Text textColor="var(--tg-theme-hint-color)" fontSize="xl" textAlign="center" m="10">No habits yet.</Text>
         ))
       }
-      {habits !== null &&
-        Object.entries(habits).map(([habit, habitStreak]) => (
-          <div key={habit}>
-            <div className='flex justify-between items-center'>
-              <span className="text-xl font-light text-[--tg-theme-text-color]">
-                {habit}
-              </span>
-              <button><img src={deleteIcon} alt="Trash icon" height={20} width={20} /></button>
-            </div>
-
-            <section className='grid grid-cols-7 bg-[--tg-theme-secondary-bg-color] rounded-md p-2'>
-              {weekDays.map((day) => (
-                <div key={day} className="flex flex-col">
-                  <span className="font-sans text-xs text-[--tg-theme-text-color] text-center">
-                    {day}
-                  </span>
-                  <DayState isDone={true} />
-                </div>
-              ))} 
-            </section>
-          </div>
-        ))
-      }
-    </main>
+      {habits !== null && 
+      Object.entries(habits).map(([habit, habitStreak]) => (
+        <Box textColor="var(--tg-theme-text-color)">
+          <Flex justifyContent="space-between">
+            <Text
+              fontSize="xl"
+              css={{ fontWeight: '300' }}
+            >{habit}</Text>
+            <IconButton 
+              icon={<img src={deleteIcon} alt="Trash icon" height={20} width={20} />}
+              aria-label='Delete Habit'
+              variant='ghost'
+              colorScheme=''
+            />
+          </Flex>
+          <Grid
+            templateColumns='repeat(7, 1fr)'
+            borderRadius='6px'
+            bg='var(--tg-theme-bg-color)'
+            padding='2'
+            marginBottom="5"
+            placeItems="center"
+          >
+            { weekDays.map((day) => (
+              <GridItem placeItems="center" fontSize="xs">{day}</GridItem>
+            ))}
+            { weekDays.map((day) => (
+              <DayState isDone={true} />
+            ))}
+          </Grid>
+        </Box>
+      ))}
+    </Container>
   );
 }
 

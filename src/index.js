@@ -5,7 +5,10 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root';
 import Home from './routes/Home';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import myTheme from "./styles/theme"
 
+const theme = extendTheme(myTheme)
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,7 +24,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ChakraProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ChakraProvider>
   </React.StrictMode>
 );
 
