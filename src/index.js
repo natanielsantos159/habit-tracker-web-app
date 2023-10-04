@@ -7,6 +7,7 @@ import Root from './routes/Root';
 import Home from './routes/Home';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import myTheme from "./styles/theme"
+import NewHabit from './routes/NewHabit';
 
 const theme = extendTheme(myTheme)
 const router = createBrowserRouter([
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/new-habit",
+        element: <NewHabit />,
       }
     ]
   },
