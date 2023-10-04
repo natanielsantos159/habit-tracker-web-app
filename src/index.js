@@ -8,6 +8,7 @@ import Home from './routes/Home';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import myTheme from "./styles/theme"
 import NewHabit from './routes/NewHabit';
+import { TelegramWebAppProvider } from "./context/TelegramWebAppContext";
 
 const theme = extendTheme(myTheme)
 const router = createBrowserRouter([
@@ -29,9 +30,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ChakraProvider>
+    <TelegramWebAppProvider>
+      <ChakraProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </TelegramWebAppProvider>
   </React.StrictMode>
 );
 

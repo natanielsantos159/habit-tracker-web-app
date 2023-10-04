@@ -57,8 +57,7 @@ function Home() {
       <Container marginTop="10">
         <Flex justifyContent="flex-end" paddingY="2">
           <Button
-            bgColor="var(--tg-theme-button-color)"
-            textColor="var(--tg-theme-button-text-color)"
+            variant="solid"
             onClick={addHabitOnClick}
           >
             Add new habit
