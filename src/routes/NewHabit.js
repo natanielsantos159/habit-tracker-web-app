@@ -7,6 +7,7 @@ import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 function NewHabit() {
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const [name, setName] = useState('');
+  const [currentIcon, setCurrentIcon] = useState('bookmark');
   const [selectedWeekDays, setSelectedWeekDays] = useState(weekDays.map(() => false));
   const navigate = useNavigate();
   const webApp = useTelegramWebApp();
@@ -35,7 +36,7 @@ function NewHabit() {
 
       <Flex gap={3} alignItems="center">
         <Box>
-          <IconsModal />
+          <IconsModal currentIcon={currentIcon} onClick={setCurrentIcon}/>
         </Box>
         <Box minWidth="75vw">
           <Text fontSize="small" fontWeight="semibold">Habit name:</Text>

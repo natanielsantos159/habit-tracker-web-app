@@ -1,22 +1,74 @@
-import { IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
-import React from 'react';
-import { ReactComponent as BookmarkIcon } from '../assets/habit-icons/bookmark.svg'
-import IconsGrid from './IconsGrid.js';
+import {
+  IconButton,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
+import React from "react";
+import HabitIcon from "./HabitIcon";
 
-
-function IconsModal() {
+function IconsModal({ onClick, currentIcon }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const iconNames = [
+    "academic-cap",
+    "annotation",
+    "bookmark",
+    "book-open",
+    "briefcase-alt",
+    "bulb-on",
+    "gamepad",
+    "heart",
+    "home-alt",
+    "moon",
+    "news",
+    "notebook",
+    "note",
+    "pencil",
+    "play-circle",
+    "shopping-bag",
+    "shopping-cart",
+    "sparkles",
+    "star",
+    "sun",
+    "terminal",
+    "users",
+  ];
 
   return (
     <>
-      <IconButton onClick={onOpen} icon={<BookmarkIcon />} />
+      <IconButton onClick={onOpen} icon={<HabitIcon iconName={currentIcon} fill="var(--tg-theme-text-color)" />} />
       <Modal isOpen={isOpen} onClose={onClose} variant="telegram-theme">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Choose an Icon</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <IconsGrid />
+            <Grid templateColumns="repeat(4, 1fr)" placeItems="center">
+              {iconNames.map((iconName) => (
+                <GridItem
+                  p="10px"
+                  onClick={() => {
+                    onClick(iconName)
+                    onClose()
+                  }}
+                  backgroundColor={currentIcon===iconName ? "var(--tg-theme-secondary-bg-color)": "var(--tg-theme-bg-color)"}
+                  cursor="pointer"
+                  borderRadius="md"
+                >
+                  <HabitIcon
+                    iconName={iconName}
+                    fill="var(--tg-theme-text-color)"
+                  />
+                </GridItem>
+              ))}
+            </Grid>
           </ModalBody>
         </ModalContent>
       </Modal>
