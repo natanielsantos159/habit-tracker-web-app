@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Container, Text, SimpleGrid, Button, Box, Flex } from '@chakra-ui/react';
 import IconsModal from '../components/IconsModal';
-
-const webApp = window.Telegram.WebApp;
+import { useNavigate } from 'react-router-dom';
+import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 
 function NewHabit() {
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const [name, setName] = useState();
+  const [name, setName] = useState('');
   const [selectedWeekDays, setSelectedWeekDays] = useState(weekDays.map(() => false));
+  const navigate = useNavigate();
+  const webApp = useTelegramWebApp();
 
   useEffect(() => {
     if (!webApp.isExpanded) {
       webApp.expand();
+    }
+    if (!webApp.BackButton.isVisible) {
+      webApp.BackButton.show()
+      webApp.BackButton.onClick(() => {
+        navigate('/');
+        webApp.BackButton.hide();
+      })
     }
   }, []);
 
@@ -35,7 +44,6 @@ function NewHabit() {
             placeholder='e.g. Meditate for 15 minutes'
             size="sm"
             marginBottom="3"
-            value={name}
             onChange={(event) => setName(event.target.value)}
             />
         </Box>
