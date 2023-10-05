@@ -51,8 +51,9 @@ function useCloudStorage() {
 
   const pushItem = async (key, item) => {
     const previousArray = await getItem(key);
-    if (!Array.isArray(previousArray)) {
-      throw new Error('You should provide a key that points to an array');
+    if (!Array.isArray(previousArray) && !previousArray) {
+      const newArray = [item];
+      await setItem(key, newArray);
     }
     
     const newArray = [...previousArray, item];
