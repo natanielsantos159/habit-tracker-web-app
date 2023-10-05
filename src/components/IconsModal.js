@@ -13,7 +13,7 @@ import {
 import React from "react";
 import HabitIcon from "./HabitIcon";
 
-function IconsModal({ onClick, currentIcon }) {
+function IconsModal({ onClick, currentIcon, currentColor }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const iconNames = [
@@ -43,7 +43,7 @@ function IconsModal({ onClick, currentIcon }) {
 
   return (
     <>
-      <IconButton onClick={onOpen} icon={<HabitIcon iconName={currentIcon} fill="var(--tg-theme-text-color)" />} />
+      <IconButton bg={currentColor} onClick={onOpen} icon={<HabitIcon iconName={currentIcon} fill="var(--tg-theme-text-color)" />} />
       <Modal isOpen={isOpen} onClose={onClose} variant="telegram-theme">
         <ModalOverlay />
         <ModalContent>
