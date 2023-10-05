@@ -6,7 +6,7 @@ import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import RadioColor from '../components/RadioColor';
 
 function NewHabit() {
-  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const habitColors = [
     'var(--tg-theme-button-color)',
     '#34c9eb',
@@ -41,7 +41,20 @@ function NewHabit() {
         webApp.BackButton.hide();
       })
     }
+
+    webApp.MainButton.setParams({
+      text: 'Save Habit',
+      is_visible: true,
+      is_active: false,
+    })
   }, []);
+
+  useEffect(() => {
+    // Enable main button if name is not empty
+    if (name !== '' && webApp.MainButton.isActive === false) {
+      webApp.MainButton.enable()
+    }
+  }, [name, webApp.MainButton]);
 
   const handleSelectDays = (index) => {
     const newSelectedWeekDays = [...selectedWeekDays];
