@@ -19,7 +19,9 @@ function NewHabit() {
   const [name, setName] = useState('');
   const [currentIcon, setCurrentIcon] = useState('bookmark');
   const [color, setColor] = useState('var(--tg-theme-button-color)');
-  const [selectedWeekDays, setSelectedWeekDays] = useState(weekDays.map(() => false));
+  const [selectedWeekDays, setSelectedWeekDays] = useState({
+    Sun: false, Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: false
+  });
   const navigate = useNavigate();
   const webApp = useTelegramWebApp();
 
@@ -56,10 +58,11 @@ function NewHabit() {
     }
   }, [name, webApp.MainButton]);
 
-  const handleSelectDays = (index) => {
-    const newSelectedWeekDays = [...selectedWeekDays];
-    newSelectedWeekDays[index] = selectedWeekDays[index] === false ? true : false;
-    setSelectedWeekDays(newSelectedWeekDays);
+
+  const handleSelectDays = (day) => {
+    const selectedDaysObjCopy = {...selectedWeekDays};
+    selectedDaysObjCopy[day] = selectedWeekDays[day] ? false : true;
+    setSelectedWeekDays(selectedDaysObjCopy);
   }
 
   return (
@@ -96,10 +99,10 @@ function NewHabit() {
       <SimpleGrid columns={7} rows={1} height="1.5" gap={1} marginY="3">
         {weekDays.map((day, index) => (
           <Button
-            variant={selectedWeekDays[index] ? "solid" : "outline"}
+            variant={selectedWeekDays[day] ? "solid" : "outline"}
             key={index}
             size="small"
-            onClick={() => handleSelectDays(index)}>
+            onClick={() => handleSelectDays(day)}>
             {day}
           </Button>
         ))}
