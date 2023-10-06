@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
-import { Flex } from '@chakra-ui/react';
+import { Flex, Spinner } from '@chakra-ui/react';
+import { useTelegramWebApp } from "./context/TelegramWebAppContext";
 
 function App() {
+  const { isReady } = useTelegramWebApp();
   return (
     <Flex
       flexDirection="column"
@@ -11,7 +13,7 @@ function App() {
       paddingBottom="10"
       textColor="var(--tg-theme-text-color)"
     >
-      <Outlet />
+      { isReady ? <Outlet /> : <Spinner size='sm' /> }
     </Flex>
   );
 }
