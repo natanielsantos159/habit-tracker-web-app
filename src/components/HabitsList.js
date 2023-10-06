@@ -20,9 +20,9 @@ function HabitsList(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    cloudStorage.getItem('habits')
+    cloudStorage.getArray('habits')
       .then((response) => {
-        console.log(response)
+        console.log(response);
         setHabits(response);
         setIsLoading(false);
       })

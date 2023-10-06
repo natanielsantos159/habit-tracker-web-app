@@ -3,6 +3,7 @@ import { useTelegramWebApp } from "../context/TelegramWebAppContext";
 function useCloudStorage() {
   const { webApp } = useTelegramWebApp();
   const cloudStorage = webApp.CloudStorage;
+  const CHAR_LIMIT = 4096;
 
   const getItem = (key) => {
     return new Promise((resolve, reject) => {
@@ -49,20 +50,38 @@ function useCloudStorage() {
     });
   }
 
+  const getArray = async (key) => {
+    const data = await getItem(key);
+    if (!data) return [];
+    const array = JSON.parse(data);
+    if (!Array.isArray(array)) return [];
+    return array;
+  }
+
   const pushItem = async (key, item) => {
-    const previousArray = await getItem(key);
-    if (!Array.isArray(previousArray) && !previousArray) {
-      const newArray = [item];
-      await setItem(key, newArray);
+    let previousData = await getItem(key);
+    let newArray, previousArray;
+    if (!previousData) {
+      newArray = [item];
+    } else {
+      previousArray = JSON.parse(previousData);
+      if (!Array.isArray(previousArray)) {
+        newArray = [item];
+      } else {
+        newArray = [...previousArray, item];
+      }
     }
     
-    const newArray = [...previousArray, item];
-    await setItem(key, newArray);
+    const jsonString = JSON.stringify(newArray);
+    if (jsonString.length > CHAR_LIMIT) throw new Error('Sorry, cloud storage limit for this key was reached');
+    await setItem(key, jsonString);
   }
 
   // This method will update the first item that matches the filter callback
   const updateArrayItem = async (key, newValue, filterCb) => {
-    const previousArray = await getItem(key);
+    const previousData = await getItem(key);
+    if (!previousData) throw new Error('No data found for the key you provided');
+    const previousArray = JSON.parse(previousData);
     if (!Array.isArray(previousArray)) {
       throw new Error('You should provide a key that points to an array');
     }
@@ -82,15 +101,19 @@ function useCloudStorage() {
     const foundItemIndex = previousArray.findIndex(filterCb);
     const newArray = [...previousArray];
     newArray[foundItemIndex] = newValue;
-    await setItem(key, newArray);
+    const jsonString = JSON.stringify(newArray);
+    if (jsonString.length > CHAR_LIMIT) throw new Error('Sorry, cloud storage limit for this key was reached');
+    await setItem(key, jsonString);
   }
 
   const removeArrayItem = async (key, filterCb) => {
     if (typeof filterCb !== 'function') {
       throw new Error('You should provide a callback function to filter the array');
     }
-  
-    const previousArray = await getItem(key);
+    
+    const previousData = await getItem(key);
+    if (!previousData) throw new Error('No data found for the key you provided');
+    const previousArray = JSON.parse(previousData);
     if (!Array.isArray(previousArray)) {
       throw new Error('You should provide a key that points to an array');
     }
@@ -106,12 +129,14 @@ function useCloudStorage() {
     const foundItemIndex = previousArray.findIndex(filterCb);
     const newArray = [...previousArray];
     newArray.splice(foundItemIndex, 1);
-    await setItem(key, newArray);
+    const jsonString = JSON.stringify(newArray);
+    await setItem(key, jsonString);
   }
 
   return {
     getItem,
     getItems,
+    getArray,
     setItem,
     removeItem,
     removeItems,
