@@ -26,7 +26,7 @@ function NewHabit() {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
-  const webApp = useTelegramWebApp();
+  const { webApp } = useTelegramWebApp();
   const cloudStorage = useCloudStorage();
 
   const { getRootProps, getRadioProps } = useRadioGroup({

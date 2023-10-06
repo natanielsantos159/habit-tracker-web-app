@@ -3,18 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Root from './routes/Root';
+import App from './App';
 import Home from './routes/Home';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import myTheme from "./styles/theme"
 import NewHabit from './routes/NewHabit';
-import { TelegramWebAppProvider } from "./context/TelegramWebAppContext";
+import { withTelegramWebApp } from './components/TelegramWebApp';
 
 const theme = extendTheme(myTheme)
+
+const AppWithTelegramWebApp = withTelegramWebApp(App);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <AppWithTelegramWebApp />,
     children: [
       {
         path: "/",
@@ -30,11 +32,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <TelegramWebAppProvider>
-      <ChakraProvider theme={theme}>
-        <RouterProvider router={router} />
-      </ChakraProvider>
-    </TelegramWebAppProvider>
+    <ChakraProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ChakraProvider>
   </React.StrictMode>
 );
 

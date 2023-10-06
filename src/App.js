@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Flex } from '@chakra-ui/react';
 
-function Root() {
+function App() {
   return (
     <Flex
       flexDirection="column"
@@ -16,4 +16,4 @@ function Root() {
   );
 }
 
-export default Root;
+export default App;

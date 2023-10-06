@@ -1,7 +1,7 @@
 import { useTelegramWebApp } from "../context/TelegramWebAppContext";
 
 function useCloudStorage() {
-  const webApp = useTelegramWebApp();
+  const { webApp } = useTelegramWebApp();
   const cloudStorage = webApp.CloudStorage;
 
   const getItem = (key) => {
