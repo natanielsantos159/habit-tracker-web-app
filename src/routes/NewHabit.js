@@ -63,11 +63,11 @@ function NewHabit() {
     }
   }, []);
 
-  const handleSaveHabit = async () => {
+  const handleSaveHabit = async ({ name, icon, color, selectedWeekDays}) => {
     try {
       await saveHabit({
         name,
-        icon: currentIcon,
+        icon,
         color,
         selectedWeekDays: Object.entries(selectedWeekDays).reduce((acc, [day, isSelected]) => {
           if (isSelected) acc.push(day);
@@ -90,9 +90,11 @@ function NewHabit() {
     // Enable main button if name is not empty
     if (name !== '' && webApp.MainButton.isActive === false) {
       webApp.MainButton.enable();
-      webApp.MainButton.onClick(handleSaveHabit);
     }
-  }, [name, webApp.MainButton]);
+    webApp.MainButton.onClick(() => handleSaveHabit({
+      name, icon: currentIcon, color, selectedWeekDays
+    }));
+  }, [name, currentIcon, color, selectedWeekDays, webApp.MainButton]);
 
 
   const handleSelectDays = (day) => {

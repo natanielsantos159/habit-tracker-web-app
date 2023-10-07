@@ -24,10 +24,7 @@ export function HabitsContextProvider({children}) {
       name,
       icon,
       color,
-      selectedWeekDays: Object.entries(selectedWeekDays).reduce((acc, [day, isSelected]) => {
-        if (isSelected) acc.push(day);
-        return acc;
-      }, []),
+      selectedWeekDays,
       history: [],
     };
     await cloudStorage.pushItem('habits', newHabit);
@@ -45,16 +42,16 @@ export function HabitsContextProvider({children}) {
   const updateDayHabitStatus = async ({ habitId, date, success }) => {
     const habitsArray = await cloudStorage.getArray('habits');
     const habitIndex = habitsArray.findIndex(({id}) => id === habitId);
-    if (habitIndex) {
+    if (habitIndex >= 0) {
       const foundHistoryItemIndex = habitsArray[habitIndex].history
-        .find((historyItem) => date === historyItem.date);
-      if (foundHistoryItemIndex) {
+        .findIndex((historyItem) => date === historyItem.date);
+      if (foundHistoryItemIndex >= 0) {
         habitsArray[habitIndex].history[foundHistoryItemIndex].success = success;
       } else {
         const newHistoryItem = { date, success };
         habitsArray[habitIndex].history.push(newHistoryItem);
       }
-      await cloudStorage.setArray(habitsArray);
+      await cloudStorage.setArray("habits", habitsArray);
       setHabits(habitsArray);
     } else {
       throw new Error('Habit not found');
