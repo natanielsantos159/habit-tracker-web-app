@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Input, Container, Text, SimpleGrid, Button, Box, Flex, useRadioGroup, useToast } from '@chakra-ui/react';
 import IconsModal from '../components/IconsModal';
 import { useNavigate } from 'react-router-dom';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import RadioColor from '../components/RadioColor';
-import useCloudStorage from '../hooks/useCloudStorage';
-import { v4 as uuidv4 } from 'uuid';
+import { HabitsContext } from '../context/HabitsContext';
 
 function NewHabit() {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -25,9 +24,9 @@ function NewHabit() {
     Sun: false, Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: false
   });
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const toast = useToast();
   const { webApp } = useTelegramWebApp();
-  const cloudStorage = useCloudStorage();
+  const { saveHabit } = useContext(HabitsContext);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'habitColor',
@@ -64,33 +63,34 @@ function NewHabit() {
     }
   }, []);
 
-  const saveHabit = async () => {
-    const habit = {
-      id: uuidv4(),
-      name,
-      icon: currentIcon,
-      color,
-      selectedWeekDays: Object.entries(selectedWeekDays).reduce((acc, [day, isSelected]) => {
-        if (isSelected) acc.push(day);
-        return acc;
-      }, []),
-      history: [],
-    };
-    const promise = cloudStorage.pushItem('habits', habit).then(() => {
-      navigate('/');
-    });
-    toast.promise(promise, {
-      success: { title: "Habit saved" },
-      error: {title: "Error", description: "Sorry, an error occurred. Please try again later."},
-      loading: {title: "Saving habit..."}
-    });
+  const handleSaveHabit = async () => {
+    try {
+      await saveHabit({
+        name,
+        icon: currentIcon,
+        color,
+        selectedWeekDays: Object.entries(selectedWeekDays).reduce((acc, [day, isSelected]) => {
+          if (isSelected) acc.push(day);
+          return acc;
+        }, []),
+      });
+      navigate('/', { state: { newHabit: true }});
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: `Sorry, an error occurred: ${err.message}`,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
   }
 
   useEffect(() => {
     // Enable main button if name is not empty
     if (name !== '' && webApp.MainButton.isActive === false) {
       webApp.MainButton.enable();
-      webApp.MainButton.onClick(saveHabit);
+      webApp.MainButton.onClick(handleSaveHabit);
     }
   }, [name, webApp.MainButton]);
 
@@ -115,8 +115,9 @@ function NewHabit() {
             variant='flushed'
             placeholder='e.g. Meditate for 15 minutes'
             size="sm"
+            value={name}
             onChange={(event) => setName(event.target.value)}
-            />
+          />
         </Box>
       </Flex>
 
