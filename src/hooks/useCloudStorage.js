@@ -58,6 +58,12 @@ function useCloudStorage() {
     return array;
   }
 
+  const setArray = async (key, array) => {
+    const jsonString = JSON.stringify(array);
+    if (jsonString.length > CHAR_LIMIT) throw new Error('Sorry, cloud storage limit for this key was reached');
+    await setItem(key, jsonString);
+  }
+
   const pushItem = async (key, item) => {
     let previousData = await getItem(key);
     let newArray, previousArray;
@@ -138,6 +144,7 @@ function useCloudStorage() {
     getItems,
     getArray,
     setItem,
+    setArray,
     removeItem,
     removeItems,
     pushItem,
