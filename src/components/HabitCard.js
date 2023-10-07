@@ -18,12 +18,12 @@ import { HabitsContext } from '../context/HabitsContext';
 function HabitCard({ habitInfo }) {
   const { id, color, icon, name, history, selectedWeekDays } = habitInfo;
   const [weekDates] = useState(getWeekDates());
-  const { updateHabitStatus } = useContext(HabitsContext);
+  const { updateDayHabitStatus } = useContext(HabitsContext);
   const toast = useToast();
 
-  const changeHabitState = async (date, newValue) => {
+  const changeDayState = async (date, newValue) => {
     try {
-      await updateHabitStatus({ habitId: id, date, success: newValue })
+      await updateDayHabitStatus({ habitId: id, date, success: newValue })
     } catch (err) {
       toast({
         title: 'Error',
@@ -61,10 +61,10 @@ function HabitCard({ habitInfo }) {
           <GridItem placeItems="center" fontSize="xs">{day}</GridItem>
         ))}
         {weekDates.map(({ day, date }) => {
-          const foundItem = history.find((item) => item.day === day && item.date === date && selectedWeekDays.includes(day));
+          const foundItem = history.find((item) => item.date === date && selectedWeekDays.includes(day));
           let result;
           if (foundItem) result = foundItem.success;
-          return <DayStateIcon isDone={result} onClick={() => changeHabitState(date, !result)} />
+          return <DayStateIcon isDone={result} onClick={() => changeDayState(date, !result)} />
         })}
       </Grid>
     </Box>
