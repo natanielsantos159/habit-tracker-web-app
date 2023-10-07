@@ -1,16 +1,31 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import logo from '../assets/logo.png';
 import { 
   Button,
   Container,
   Flex,
-  Image
+  Image,
+  useToast
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import HabitsList from '../components/HabitsList';
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (location.state && location.state.newHabit) {
+      toast({
+        title: 'Habit saved',
+        description: 'Your new habit has been saved successfully.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, []);
 
   const addHabitOnClick = () => {
     navigate('/new-habit');

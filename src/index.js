@@ -9,7 +9,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import myTheme from "./styles/theme"
 import NewHabit from './routes/NewHabit';
 import { withTelegramWebApp } from './components/TelegramWebApp';
-import { HabitsContextProvider } from './context/useHabitsContext';
+import { HabitsContextProvider } from './context/HabitsContext';
 
 const theme = extendTheme(myTheme)
 
