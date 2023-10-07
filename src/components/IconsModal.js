@@ -43,7 +43,7 @@ function IconsModal({ onClick, currentIcon, currentColor }) {
 
   return (
     <>
-      <IconButton bg={currentColor} onClick={onOpen} icon={<HabitIcon iconName={currentIcon} fill="var(--tg-theme-text-color)" />} />
+      <IconButton bg={currentColor} onClick={onOpen} icon={<HabitIcon iconName={currentIcon} fill="var(--tg-theme-button-text-color)" />} />
       <Modal isOpen={isOpen} onClose={onClose} variant="telegram-theme">
         <ModalOverlay />
         <ModalContent>

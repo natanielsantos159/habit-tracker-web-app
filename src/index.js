@@ -9,6 +9,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import myTheme from "./styles/theme"
 import NewHabit from './routes/NewHabit';
 import { withTelegramWebApp } from './components/TelegramWebApp';
+import { HabitsContextProvider } from './context/useHabitsContext';
 
 const theme = extendTheme(myTheme)
 
@@ -16,7 +17,7 @@ const AppWithTelegramWebApp = withTelegramWebApp(App);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppWithTelegramWebApp />,
+    element: <HabitsContextProvider><AppWithTelegramWebApp /></HabitsContextProvider>,
     children: [
       {
         path: "/",
