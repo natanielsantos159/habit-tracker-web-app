@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Flex, Spinner } from '@chakra-ui/react';
 import { useTelegramWebApp } from "./context/TelegramWebAppContext";
+import { HabitsContextProvider } from './context/HabitsContext';
 
 function App() {
   const { isReady } = useTelegramWebApp();
@@ -13,7 +14,9 @@ function App() {
       paddingBottom="10"
       textColor="var(--tg-theme-text-color)"
     >
-      { isReady ? <Outlet /> : <Spinner size='sm' /> }
+      { isReady ? (
+        <HabitsContextProvider><Outlet /></HabitsContextProvider>
+      ) : <Spinner size='sm' /> }
     </Flex>
   );
 }

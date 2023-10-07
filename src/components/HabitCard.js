@@ -64,7 +64,7 @@ function HabitCard({ habitInfo }) {
           const foundItem = history.find((item) => item.day === day && item.date === date && selectedWeekDays.includes(day));
           let result;
           if (foundItem) result = foundItem.success;
-          return <DayStateIcon isDone={result} onClick={() => changeHabitState(date, !foundItem.success)} />
+          return <DayStateIcon isDone={result} onClick={() => changeHabitState(date, !result)} />
         })}
       </Grid>
     </Box>
