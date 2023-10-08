@@ -54,7 +54,9 @@ function useCloudStorage() {
     const data = await getItem(key);
     if (!data) return [];
     const array = JSON.parse(data);
-    if (!Array.isArray(array)) return [];
+    if (!Array.isArray(array)) {
+      throw new Error('Data is not an array');
+    };
     return array;
   }
 
@@ -85,16 +87,10 @@ function useCloudStorage() {
 
   // This method will update the first item that matches the filter callback
   const updateArrayItem = async (key, newValue, filterCb) => {
-    const previousData = await getItem(key);
-    if (!previousData) throw new Error('No data found for the key you provided');
-    const previousArray = JSON.parse(previousData);
-    if (!Array.isArray(previousArray)) {
-      throw new Error('You should provide a key that points to an array');
-    }
-
     if (typeof filterCb !== 'function') {
       throw new Error('You should provide a callback function to filter the array');
     }
+    const previousArray = await getArray(key);
 
     const foundItems = previousArray.filter(filterCb);
     if (foundItems.length === 0) {
@@ -107,9 +103,7 @@ function useCloudStorage() {
     const foundItemIndex = previousArray.findIndex(filterCb);
     const newArray = [...previousArray];
     newArray[foundItemIndex] = newValue;
-    const jsonString = JSON.stringify(newArray);
-    if (jsonString.length > CHAR_LIMIT) throw new Error('Sorry, cloud storage limit for this key was reached');
-    await setItem(key, jsonString);
+    await setArray(key, newArray);
   }
 
   const removeArrayItem = async (key, filterCb) => {
@@ -117,12 +111,7 @@ function useCloudStorage() {
       throw new Error('You should provide a callback function to filter the array');
     }
     
-    const previousData = await getItem(key);
-    if (!previousData) throw new Error('No data found for the key you provided');
-    const previousArray = JSON.parse(previousData);
-    if (!Array.isArray(previousArray)) {
-      throw new Error('You should provide a key that points to an array');
-    }
+    const previousArray = await getArray(key);
 
     const foundItems = previousArray.filter(filterCb);
     if (foundItems.length === 0) {
@@ -135,8 +124,7 @@ function useCloudStorage() {
     const foundItemIndex = previousArray.findIndex(filterCb);
     const newArray = [...previousArray];
     newArray.splice(foundItemIndex, 1);
-    const jsonString = JSON.stringify(newArray);
-    await setItem(key, jsonString);
+    await setArray(key, newArray);
   }
 
   return {
