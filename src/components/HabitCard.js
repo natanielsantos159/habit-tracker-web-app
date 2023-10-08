@@ -85,14 +85,26 @@ function HabitCard({ habitInfo }) {
         padding='2'
         placeItems="center"
       >
-        {weekDates.map(({ day }) => (
-          <GridItem placeItems="center" fontSize="xs">{day}</GridItem>
-        ))}
         {weekDates.map(({ day, date }) => {
+          if (selectedWeekDays.includes(day) === false) return (<GridItem></GridItem>);
           const foundItem = history.find((item) => item.date === date && selectedWeekDays.includes(day));
           let result;
           if (foundItem) result = foundItem.success;
-          return <DayStateIcon isDone={result} onClick={() => changeDayState(date, !result)} />
+          const isToday = date === new Date().toISOString().split('T')[0];
+          return (
+            <GridItem 
+              placeItems="center"
+              fontSize="xs"
+              onClick={() => changeDayState(date, !result)}
+              cursor="pointer"
+              padding="3px 9px"
+              borderRadius="inherit"
+              background={isToday ? '#00000030' : 'transparent' }
+            >
+              {day}
+              <DayStateIcon isDone={result} />
+            </GridItem>
+          )
         })}
       </Grid>
     </Box>
