@@ -76,6 +76,7 @@ function HabitCard({ habitInfo }) {
           onClick={handleDeleteHabit}
           aria-label='Delete Habit'
           variant='ghost'
+          _hover={{ background: 'transparent' }}
         />
       </Flex>
       <Grid

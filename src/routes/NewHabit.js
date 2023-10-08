@@ -47,6 +47,7 @@ function NewHabit() {
     }
 
     webApp.MainButton.setParams({
+      color: "var(--disabled-color)",
       text: 'Save Habit',
       is_visible: true,
       is_active: false,
@@ -87,10 +88,23 @@ function NewHabit() {
   }
 
   useEffect(() => {
-    // Enable main button if name is not empty
-    if (name !== '' && webApp.MainButton.isActive === false) {
-      webApp.MainButton.enable();
+    // Enable main button if name and selected week days is not empty
+    const formIsValid = name !== '' && selectedWeekDays.every((item) => !item);
+    if (formIsValid && webApp.MainButton.isActive === false) {
+      webApp.MainButton.setParams({
+        is_active: true,
+        text: 'Save Habit',
+        color: "var(--tg-theme-button-color)",
+      });
+    } else if (!formIsValid && webApp.MainButton.isActive) {
+      webApp.MainButton.setParams({
+        is_active: false,
+        text: 'Save Habit',
+        color: "var(--disabled-color)",
+      });
     }
+
+    // Updates main button on click function
     webApp.MainButton.onClick(() => handleSaveHabit({
       name, icon: currentIcon, color, selectedWeekDays
     }));

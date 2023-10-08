@@ -33,9 +33,6 @@ function Home() {
 
   return (
     <>
-      <header>
-        <Image src={logo} marginTop="2.5rem" alt="logo" width={200} />
-      </header>
       <Container marginTop="10">
         <Flex justifyContent="flex-end" paddingY="2">
           <Button

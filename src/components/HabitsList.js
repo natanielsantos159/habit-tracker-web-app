@@ -12,10 +12,9 @@ function HabitsList() {
 
   return (
     <>
-      {!habits ||
-        (habits.length === 0 && (
+      {!habits && habits.length === 0 && !isLoading && (
           <Text textColor="var(--tg-theme-hint-color)" fontSize="xl" textAlign="center" m="10">No habits yet.</Text>
-        ))
+        )
       }
       {isLoading && <Box position="relative"><Spinner size='md' position="fixed" left="50%"/></Box>}
       {habits && Array.isArray(habits) && habits.map((habitInfo, i) => (
