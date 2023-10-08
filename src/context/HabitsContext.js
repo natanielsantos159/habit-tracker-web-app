@@ -8,12 +8,17 @@ export function HabitsContextProvider({children}) {
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const cloudStorage = useCloudStorage();
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     cloudStorage.getArray('habits')
       .then((response) => {
         setHabits(response);
-        setIsLoading(false);
+        getMultipleHistories(response.map(({id}) => id))
+          .then((response) => {
+            setHistory(response);
+            setIsLoading(false);
+          });
       });
   }, []);
   
@@ -45,31 +50,51 @@ export function HabitsContextProvider({children}) {
     const successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
     const failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
     if (successDaysArray && failedDaysArray) {
-      return { successDays: successDaysArray, failedDays: failedDaysArray };
+      return { habitId, successDays: successDaysArray, failedDays: failedDaysArray };
     } else {
       throw new Error('Error while fetching history.');
     }
   }
 
+  const getMultipleHistories = async (habitsIdArray) => {
+    const results = await Promise.all(habitsIdArray.map((id) => getHabitHistory(id)));
+    return results;
+  }
+
   const updateDayHabitStatus = async ({ habitId, date, success }) => {
-    const successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
-    const failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
+    let successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
+    let failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
     if (successDaysArray && failedDaysArray) {
       if (success === false) {
         if (successDaysArray.includes(date)) {
           await cloudStorage.removeArrayItem(`${habitId}_success_history`, (day) => day === date);
+          successDaysArray = successDaysArray.filter((day) => day !== date);
         }
         if (!failedDaysArray.includes(date)) {
           await cloudStorage.pushItem(`${habitId}_failed_history`, date);
+          failedDaysArray.push(date);
         }
       } else if (success === true) {
         if (failedDaysArray.includes(date)) {
           await cloudStorage.removeArrayItem(`${habitId}_failed_history`, (day) => day === date);
+          failedDaysArray = failedDaysArray.filter((day) => day !== date);
         }
+
         if (!successDaysArray.includes(date)) {
           await cloudStorage.pushItem(`${habitId}_success_history`, date);
+          successDaysArray.push(date);
         }
       }
+      setHistory((prevHistory) => {
+        const habitHistoryIndex = prevHistory.findIndex(({habitId: id}) => id === habitId);
+        const newHistory = [...prevHistory];
+        newHistory[habitHistoryIndex] = {
+          habitId,
+          successDays: successDaysArray,
+          failedDays: failedDaysArray,
+        };
+        return newHistory;
+      });
     } else {
       throw new Error('Error while fetching history.');
     }
@@ -83,6 +108,7 @@ export function HabitsContextProvider({children}) {
     getHabitHistory,
     saveHabit,
     deleteHabit,
+    history,
   }
   return (
     <HabitsContext.Provider value={contextValues}>

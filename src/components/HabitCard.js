@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import DayStateIcon from './DayStateIcon';
 import deleteIcon from '../assets/delete.png';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { getWeekDates } from '../utils/getWeekDates';
 import HabitIcon from './HabitIcon';
 import { HabitsContext } from '../context/HabitsContext';
@@ -18,28 +18,10 @@ import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 function HabitCard({ habitInfo }) {
   const { id, color, icon, name, selectedWeekDays } = habitInfo;
   const [weekDates] = useState(getWeekDates());
-  const { getHabitHistory, updateDayHabitStatus, deleteHabit } = useContext(HabitsContext);
+  const { isLoading, history, updateDayHabitStatus, deleteHabit } = useContext(HabitsContext);
   const toast = useToast();
   const { webApp } = useTelegramWebApp();
-  const [historyIsLoading, setHistoryIsLoading] = useState(true);
-  const [history, setHistory] = useState(null);
-
-  useEffect(() => {
-    getHabitHistory(id)
-      .then((response) => {
-        setHistory(response);
-        setHistoryIsLoading(false);
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: `Sorry, an error occurred: ${err.message}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      })
-  }, []);
+  const habitHistory = history.find(({ habitId }) => habitId === id);
 
   const changeDayState = async (date, newValue) => {
     try {
@@ -104,11 +86,11 @@ function HabitCard({ habitInfo }) {
         padding='2'
         placeItems="center"
       >
-        {!historyIsLoading && weekDates.map(({ day, date }) => {
+        {!isLoading && weekDates.map(({ day, date }) => {
           if (selectedWeekDays.includes(day) === false) return (<GridItem></GridItem>);
           let success;
-          if (history.successDays.includes(date)) success = true;
-          if (history.failedDays.includes(date)) success = false;
+          if (habitHistory.successDays.includes(date)) success = true;
+          if (habitHistory.failedDays.includes(date)) success = false;
           const isToday = date === new Date().toISOString().split('T')[0];
           return (
             <GridItem 

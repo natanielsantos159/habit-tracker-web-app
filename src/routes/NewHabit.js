@@ -101,10 +101,16 @@ function NewHabit() {
       });
     }
 
-    // Updates main button on click function
-    webApp.MainButton.onClick(() => handleSaveHabit({
+    // Updates main button onClick function with the current state 
+    const mainButtonCb = () => handleSaveHabit({
       name, icon: currentIcon, color, selectedWeekDays
-    }));
+    });
+    webApp.MainButton.onClick(mainButtonCb);
+
+    // Removes the previous callback before setting a new one
+    return () => {
+      webApp.MainButton.offClick(mainButtonCb);
+    }
   }, [name, currentIcon, color, selectedWeekDays, webApp.MainButton]);
 
 
