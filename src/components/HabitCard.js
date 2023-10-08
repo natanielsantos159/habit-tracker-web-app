@@ -7,13 +7,13 @@ import {
   Flex,
   useToast,
 } from '@chakra-ui/react';
-import DayStateIcon from './DayStateIcon';
 import deleteIcon from '../assets/delete.png';
 import { useState, useContext } from 'react';
 import { getWeekDates } from '../utils/getWeekDates';
 import HabitIcon from './HabitIcon';
 import { HabitsContext } from '../context/HabitsContext';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
+import HabitDayGridItem from './HabitDayGridItem';
 
 function HabitCard({ habitInfo }) {
   const { id, color, icon, name, selectedWeekDays } = habitInfo;
@@ -21,21 +21,7 @@ function HabitCard({ habitInfo }) {
   const { isLoading, history, updateDayHabitStatus, deleteHabit } = useContext(HabitsContext);
   const toast = useToast();
   const { webApp } = useTelegramWebApp();
-  const habitHistory = history.find(({ habitId }) => habitId === id);
-
-  const changeDayState = async (date, newValue) => {
-    try {
-      await updateDayHabitStatus({ habitId: id, date, success: newValue })
-    } catch (err) {
-      toast({
-        title: 'Error',
-        description: `Sorry, an error occurred: ${err.message}`,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
-    }
-  }
+  const habitHistory = history.find(({ habitId }) => habitId === id) || {};
 
   const handleDeleteHabit = () => {
     webApp.showConfirm("Are you sure you want to deleted this habit?", (response) => {
@@ -89,22 +75,16 @@ function HabitCard({ habitInfo }) {
         {!isLoading && weekDates.map(({ day, date }) => {
           if (selectedWeekDays.includes(day) === false) return (<GridItem></GridItem>);
           let success;
-          if (habitHistory.successDays.includes(date)) success = true;
-          if (habitHistory.failedDays.includes(date)) success = false;
+          if (habitHistory.successDays?.includes(date)) success = true;
+          if (habitHistory.failedDays?.includes(date)) success = false;
           const isToday = date === new Date().toISOString().split('T')[0];
           return (
-            <GridItem 
-              placeItems="center"
-              fontSize="xs"
-              onClick={() => changeDayState(date, !success)}
-              cursor="pointer"
-              padding="3px 9px"
-              borderRadius="inherit"
-              background={isToday ? '#00000030' : 'transparent' }
-            >
-              {day}
-              <DayStateIcon isDone={success} />
-            </GridItem>
+            <HabitDayGridItem 
+              day={day}
+              onClick={(newValue) => updateDayHabitStatus({ habitId: id, date, success: newValue })}
+              isToday={isToday}
+              success={success}
+            />
           )
         })}
       </Grid>

@@ -67,7 +67,7 @@ export function HabitsContextProvider({children}) {
     if (successDaysArray && failedDaysArray) {
       if (success === false) {
         if (successDaysArray.includes(date)) {
-          await cloudStorage.removeArrayItem(`${habitId}_success_history`, (day) => day === date);
+          await cloudStorage.removeMultipleArrayItems(`${habitId}_success_history`, (day) => day === date);
           successDaysArray = successDaysArray.filter((day) => day !== date);
         }
         if (!failedDaysArray.includes(date)) {
@@ -76,7 +76,7 @@ export function HabitsContextProvider({children}) {
         }
       } else if (success === true) {
         if (failedDaysArray.includes(date)) {
-          await cloudStorage.removeArrayItem(`${habitId}_failed_history`, (day) => day === date);
+          await cloudStorage.removeMultipleArrayItems(`${habitId}_failed_history`, (day) => day === date);
           failedDaysArray = failedDaysArray.filter((day) => day !== date);
         }
 

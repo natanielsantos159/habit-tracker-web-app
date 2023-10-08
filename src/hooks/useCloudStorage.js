@@ -106,6 +106,7 @@ function useCloudStorage() {
     await setArray(key, newArray);
   }
 
+  // Removes only one item that matches the filter callback
   const removeArrayItem = async (key, filterCb) => {
     if (typeof filterCb !== 'function') {
       throw new Error('You should provide a callback function to filter the array');
@@ -127,6 +128,18 @@ function useCloudStorage() {
     await setArray(key, newArray);
   }
 
+  // Removes all items that match the filter callback
+  const removeMultipleArrayItems = async (key, filterCb) => {
+    if (typeof filterCb !== 'function') {
+      throw new Error('You should provide a callback function to filter the array');
+    }
+
+    const previousArray = await getArray(key);
+
+    const newArray = previousArray.filter(item => !filterCb(item));
+    await setArray(key, newArray);
+  }
+    
   return {
     getItem,
     getItems,
@@ -138,6 +151,7 @@ function useCloudStorage() {
     pushItem,
     updateArrayItem,
     removeArrayItem,
+    removeMultipleArrayItems,
   };
 }
 
