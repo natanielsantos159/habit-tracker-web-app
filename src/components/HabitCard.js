@@ -14,12 +14,14 @@ import { useState, useContext } from 'react';
 import { getWeekDates } from '../utils/getWeekDates';
 import HabitIcon from './HabitIcon';
 import { HabitsContext } from '../context/HabitsContext';
+import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 
 function HabitCard({ habitInfo }) {
   const { id, color, icon, name, history, selectedWeekDays } = habitInfo;
   const [weekDates] = useState(getWeekDates());
-  const { updateDayHabitStatus } = useContext(HabitsContext);
+  const { updateDayHabitStatus, deleteHabit } = useContext(HabitsContext);
   const toast = useToast();
+  const { webApp } = useTelegramWebApp();
 
   const changeDayState = async (date, newValue) => {
     try {
@@ -35,6 +37,31 @@ function HabitCard({ habitInfo }) {
     }
   }
 
+  const handleDeleteHabit = () => {
+    webApp.showConfirm("Are you sure you want to deleted this habit?", (response) => {
+      if (response === true) {
+        deleteHabit(id)
+          .then(() => {
+            toast({
+              title: 'Success',
+              description: `Habit deleted successfully`,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            })
+          })
+          .catch((err) => {
+            toast({
+              title: 'Error',
+              description: `Sorry, an error occurred: ${err.message}`,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            })
+          })
+      }
+    })
+  }
   return (
     <Box textColor="var(--tg-theme-text-color)" marginY="4" position="relative">
       <Flex justifyContent="space-between" marginBottom="3" gap="4" alignItems="center">
@@ -46,6 +73,7 @@ function HabitCard({ habitInfo }) {
         <IconButton
           marginLeft="auto"
           icon={<img src={deleteIcon} alt="Trash icon" height={20} width={20} />}
+          onClick={handleDeleteHabit}
           aria-label='Delete Habit'
           variant='ghost'
         />
