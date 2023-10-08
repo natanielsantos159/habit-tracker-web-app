@@ -20,9 +20,9 @@ function NewHabit() {
   const [name, setName] = useState('');
   const [currentIcon, setCurrentIcon] = useState('bookmark');
   const [color, setColor] = useState('var(--tg-theme-button-color)');
-  const [selectedWeekDays, setSelectedWeekDays] = useState({
-    Sun: false, Mon: true, Tue: true, Wed: true, Thu: true, Fri: true, Sat: false
-  });
+  const [selectedWeekDays, setSelectedWeekDays] = useState([
+    'Mon', 'Tue', 'Wed', 'Thu', 'Fri',
+  ]);
   const navigate = useNavigate();
   const toast = useToast();
   const { webApp } = useTelegramWebApp();
@@ -47,7 +47,7 @@ function NewHabit() {
     }
 
     webApp.MainButton.setParams({
-      color: "var(--disabled-color)",
+      color: "#6b6767",
       text: 'Save Habit',
       is_visible: true,
       is_active: false,
@@ -70,10 +70,7 @@ function NewHabit() {
         name,
         icon,
         color,
-        selectedWeekDays: Object.entries(selectedWeekDays).reduce((acc, [day, isSelected]) => {
-          if (isSelected) acc.push(day);
-          return acc;
-        }, []),
+        selectedWeekDays,
       });
       navigate('/', { state: { newHabit: true }});
     } catch (err) {
@@ -89,18 +86,18 @@ function NewHabit() {
 
   useEffect(() => {
     // Enable main button if name and selected week days is not empty
-    const formIsValid = name !== '' && selectedWeekDays.every((item) => !item);
+    const formIsValid = name !== '' && selectedWeekDays.length > 0;
     if (formIsValid && webApp.MainButton.isActive === false) {
       webApp.MainButton.setParams({
         is_active: true,
         text: 'Save Habit',
-        color: "var(--tg-theme-button-color)",
+        color: false, // Setting to false so the theme color is used
       });
     } else if (!formIsValid && webApp.MainButton.isActive) {
       webApp.MainButton.setParams({
         is_active: false,
         text: 'Save Habit',
-        color: "var(--disabled-color)",
+        color: "#6b6767",
       });
     }
 
@@ -112,9 +109,14 @@ function NewHabit() {
 
 
   const handleSelectDays = (day) => {
-    const selectedDaysObjCopy = {...selectedWeekDays};
-    selectedDaysObjCopy[day] = selectedWeekDays[day] ? false : true;
-    setSelectedWeekDays(selectedDaysObjCopy);
+    const arrCopy = [...selectedWeekDays];
+    const itemIndex = selectedWeekDays.indexOf(day);
+    if (itemIndex > -1) {
+      arrCopy.splice(itemIndex, 1);
+    } else {
+      arrCopy.push(day);
+    }
+    setSelectedWeekDays(arrCopy);
   }
 
   return (
@@ -152,7 +154,7 @@ function NewHabit() {
       <SimpleGrid columns={7} rows={1} height="1.5" gap={1} marginY="3">
         {weekDays.map((day, index) => (
           <Button
-            variant={selectedWeekDays[day] ? "solid" : "outline"}
+            variant={selectedWeekDays.includes(day) ? "solid" : "outline"}
             key={index}
             size="small"
             onClick={() => handleSelectDays(day)}>
