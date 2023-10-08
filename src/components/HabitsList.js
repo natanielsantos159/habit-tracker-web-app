@@ -12,7 +12,7 @@ function HabitsList() {
 
   return (
     <>
-      {!habits && habits.length === 0 && !isLoading && (
+      {habits && habits.length === 0 && !isLoading && (
           <Text textColor="var(--tg-theme-hint-color)" fontSize="xl" textAlign="center" m="10">No habits yet.</Text>
         )
       }

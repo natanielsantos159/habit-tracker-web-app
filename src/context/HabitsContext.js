@@ -25,36 +25,53 @@ export function HabitsContextProvider({children}) {
       icon,
       color,
       selectedWeekDays,
-      history: [],
     };
     await cloudStorage.pushItem('habits', newHabit);
     const newArray = [newHabit, ...habits];
     setHabits(newArray);
+    await cloudStorage.setArray(`${newHabit.id}_success_history`, []);
+    await cloudStorage.setArray(`${newHabit.id}_failed_history`, []);
   }
 
   const deleteHabit = async (habitId) => {
     await cloudStorage.removeArrayItem('habits', ({id}) => id === habitId);
+    await cloudStorage.removeItems(`${habitId}_success_history`, `${habitId}_failed_history`);
     let newArray = [...habits];
     newArray = newArray.filter(({id}) => id !== habitId);
     setHabits(newArray);
   }
 
-  const updateDayHabitStatus = async ({ habitId, date, success }) => {
-    const habitsArray = await cloudStorage.getArray('habits');
-    const habitIndex = habitsArray.findIndex(({id}) => id === habitId);
-    if (habitIndex >= 0) {
-      const foundHistoryItemIndex = habitsArray[habitIndex].history
-        .findIndex((historyItem) => date === historyItem.date);
-      if (foundHistoryItemIndex >= 0) {
-        habitsArray[habitIndex].history[foundHistoryItemIndex].success = success;
-      } else {
-        const newHistoryItem = { date, success };
-        habitsArray[habitIndex].history.push(newHistoryItem);
-      }
-      await cloudStorage.setArray("habits", habitsArray);
-      setHabits(habitsArray);
+  const getHabitHistory = async (habitId) => {
+    const successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
+    const failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
+    if (successDaysArray && failedDaysArray) {
+      return { successDays: successDaysArray, failedDays: failedDaysArray };
     } else {
-      throw new Error('Habit not found');
+      throw new Error('Error while fetching history.');
+    }
+  }
+
+  const updateDayHabitStatus = async ({ habitId, date, success }) => {
+    const successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
+    const failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
+    if (successDaysArray && failedDaysArray) {
+      if (success === false) {
+        if (successDaysArray.includes(date)) {
+          await cloudStorage.removeArrayItem(`${habitId}_success_history`, (day) => day === date);
+        }
+        if (!failedDaysArray.includes(date)) {
+          await cloudStorage.pushItem(`${habitId}_failed_history`, date);
+        }
+      } else if (success === true) {
+        if (failedDaysArray.includes(date)) {
+          await cloudStorage.removeArrayItem(`${habitId}_failed_history`, (day) => day === date);
+        }
+        if (!successDaysArray.includes(date)) {
+          await cloudStorage.pushItem(`${habitId}_success_history`, date);
+        }
+      }
+    } else {
+      throw new Error('Error while fetching history.');
     }
   }
   const contextValues = {
@@ -63,6 +80,7 @@ export function HabitsContextProvider({children}) {
     isLoading,
     setIsLoading,
     updateDayHabitStatus,
+    getHabitHistory,
     saveHabit,
     deleteHabit,
   }
