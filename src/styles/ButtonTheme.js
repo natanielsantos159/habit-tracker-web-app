@@ -2,7 +2,7 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 const outline = defineStyle({
   border: '2px solid var(--tg-theme-button-color)',
-  borderRadius: '1rem',
+  borderRadius: '0.4rem',
   fontWeight: 'semibold',
   textColor: 'var(--tg-theme-button-color)',
   borderColor: 'var(--tg-theme-button-color)',
@@ -18,7 +18,7 @@ const outline = defineStyle({
 });
 const solid = defineStyle({
   border: '2px solid transparent',
-  borderRadius: '1rem',
+  borderRadius: '0.4rem',
   fontWeight: 'semibold',
   textColor: 'var(--tg-theme-button-text-color)',
   backgroundColor: 'var(--tg-theme-button-color)',

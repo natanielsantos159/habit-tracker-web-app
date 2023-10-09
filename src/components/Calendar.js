@@ -1,19 +1,8 @@
 import { Box } from '@chakra-ui/react';
 import CalendarHeader from './CalendarHeader';
 import CalendarDays from './CalendarDays';
-import { useState } from 'react';
 
-function Calendar () {
-  const [activeDate, setActiveDate] = useState(new Date());
-
-  const onClickDate = (day, month) => {
-    if (typeof day !== 'string' && day !== -1) {
-      let newDate = new Date(activeDate.setMonth(month));
-      newDate = new Date(activeDate.setDate(day));
-      setActiveDate(newDate);
-    }
-  };
-
+function Calendar ({activeDate, onDateClick }) {
   return (
     <Box>
       <Box
@@ -27,8 +16,8 @@ function Calendar () {
         flexDirection="column"
         justifyContent="center"
       >
-        <CalendarHeader activeDate={activeDate} onClick={onClickDate} />
-        <CalendarDays activeDate={activeDate} onClick={onClickDate} />
+        <CalendarHeader activeDate={activeDate} onClick={onDateClick} />
+        <CalendarDays activeDate={activeDate} onClick={onDateClick} />
       </Box>
     </Box>
   );

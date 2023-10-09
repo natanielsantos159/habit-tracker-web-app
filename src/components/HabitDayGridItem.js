@@ -25,7 +25,6 @@ function HabitDayGridItem({ onClick, isToday, day, success }) {
       
       return !prev;
     });
-
   }
   return (
     <GridItem

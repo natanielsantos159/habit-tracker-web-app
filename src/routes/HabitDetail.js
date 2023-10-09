@@ -5,9 +5,11 @@ import Calendar from '../components/Calendar';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import { HabitsContext } from '../context/HabitsContext';
 import HabitIcon from '../components/HabitIcon';
+import ChangeDayStateCard from '../components/ChangeDayStateCard';
 import { ReactComponent as DeleteIcon} from '../assets/delete.svg';
 
 function HabitDetail() {
+  const [activeDate, setActiveDate] = useState(new Date());
   const [habitInfo, setHabitInfo] = useState();
   const { webApp } = useTelegramWebApp();
   const navigate = useNavigate();
@@ -32,6 +34,15 @@ function HabitDetail() {
       webApp.BackButton.hide();
     }
   }, []);
+
+
+  const onDateClick = (day, month) => {
+    if (typeof day !== 'string' && day !== -1) {
+      let newDate = new Date(activeDate.setMonth(month));
+      newDate = new Date(activeDate.setDate(day));
+      setActiveDate(newDate);
+    }
+  };
 
   const handleDeleteHabit = () => {
     webApp.showConfirm("Are you sure you want to deleted this habit?", (response) => {
@@ -89,7 +100,8 @@ function HabitDetail() {
             />
           </Flex>
         )}
-        <Calendar />
+        <Calendar activeDate={activeDate} onDateClick={onDateClick} />
+        <ChangeDayStateCard activeDate={activeDate} />;
       </Stack>
     </Center>
   );

@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <NewHabit />,
       },
       {
-        path: "/habits/:id",
+        path: "/habits/:habitId",
         element: <HabitDetail />,
       }
     ]
