@@ -3,12 +3,13 @@ import doneIcon from '../assets/done.png';
 import grayIcon from '../assets/gray.png';
 import unfinishedIcon from '../assets/unfinished.png';
 
-function DayStateIcon({ isDone, onClick }) {
+function DayStateIcon({ isDone, onClick, ...props }) {
   let image;
   const defaultProps = {
     height: 20,
     width: 20,
     onClick,
+    ...props
   }
 
   if (isDone === true) {

@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import RadioColor from '../components/RadioColor';
 import { HabitsContext } from '../context/HabitsContext';
+import { weekDays } from '../consts/consts';
 
 function NewHabit() {
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const habitColors = [
     'var(--tg-theme-button-color)',
     '#34c9eb',

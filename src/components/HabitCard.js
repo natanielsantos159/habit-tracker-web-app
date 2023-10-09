@@ -14,6 +14,7 @@ import HabitIcon from './HabitIcon';
 import { HabitsContext } from '../context/HabitsContext';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import HabitDayGridItem from './HabitDayGridItem';
+import { useNavigate } from 'react-router-dom';
 
 function HabitCard({ habitInfo }) {
   const { id, color, icon, name, selectedWeekDays } = habitInfo;
@@ -22,6 +23,7 @@ function HabitCard({ habitInfo }) {
   const toast = useToast();
   const { webApp } = useTelegramWebApp();
   const habitHistory = history.find(({ habitId }) => habitId === id) || {};
+  const navigate = useNavigate();
 
   const handleDeleteHabit = () => {
     webApp.showConfirm("Are you sure you want to deleted this habit?", (response) => {
@@ -48,9 +50,21 @@ function HabitCard({ habitInfo }) {
       }
     })
   }
+
+  const handleHabitCardClick = () => {
+    navigate(`/habits/${id}`)
+  }
+
   return (
     <Box textColor="var(--tg-theme-text-color)" marginY="4" position="relative">
-      <Flex justifyContent="space-between" marginBottom="3" gap="4" alignItems="center">
+      <Flex
+        onClick={handleHabitCardClick} 
+        cursor="pointer"
+        justifyContent="space-between"
+        marginBottom="3"
+        gap="4"
+        alignItems="center"
+      >
         <IconButton bg={color} icon={<HabitIcon iconName={icon} fill="var(--tg-theme-button-text-color)" />} />
         <Text
           fontSize="xl"
