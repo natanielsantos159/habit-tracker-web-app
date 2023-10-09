@@ -7,7 +7,7 @@ import {
   Flex,
   useToast,
 } from '@chakra-ui/react';
-import deleteIcon from '../assets/delete.png';
+import { ReactComponent as DeleteIcon} from '../assets/delete.svg';
 import { useState, useContext } from 'react';
 import { getWeekDates } from '../utils/getWeekDates';
 import HabitIcon from './HabitIcon';
@@ -57,8 +57,7 @@ function HabitCard({ habitInfo }) {
 
   return (
     <Box textColor="var(--tg-theme-text-color)" marginY="4" position="relative">
-      <Flex
-        onClick={handleHabitCardClick} 
+      <Flex 
         cursor="pointer"
         justifyContent="space-between"
         marginBottom="3"
@@ -67,12 +66,13 @@ function HabitCard({ habitInfo }) {
       >
         <IconButton bg={color} icon={<HabitIcon iconName={icon} fill="var(--tg-theme-button-text-color)" />} />
         <Text
+          onClick={handleHabitCardClick}
           fontSize="xl"
           css={{ fontWeight: '300' }}
         >{name}</Text>
         <IconButton
           marginLeft="auto"
-          icon={<img src={deleteIcon} alt="Trash icon" height={20} width={20} />}
+          icon={<DeleteIcon stroke="#f54561" />}
           onClick={handleDeleteHabit}
           aria-label='Delete Habit'
           variant='ghost'

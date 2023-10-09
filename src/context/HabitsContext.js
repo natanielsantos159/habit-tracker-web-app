@@ -46,6 +46,14 @@ export function HabitsContextProvider({children}) {
     setHabits(newArray);
   }
 
+  const getHabit = async (habitId) => {
+    const habits = await cloudStorage.getArray('habits');
+    const foundHabit = habits.find(({ id }) => habitId);
+    if (foundHabit) {
+      return foundHabit;
+    }
+  } 
+
   const getHabitHistory = async (habitId) => {
     const successDaysArray = await cloudStorage.getArray(`${habitId}_success_history`);
     const failedDaysArray = await cloudStorage.getArray(`${habitId}_failed_history`);
@@ -107,6 +115,7 @@ export function HabitsContextProvider({children}) {
     updateDayHabitStatus,
     getHabitHistory,
     saveHabit,
+    getHabit,
     deleteHabit,
     history,
   }
