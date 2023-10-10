@@ -9,12 +9,10 @@ Habit Tracker is a simple bot designed to help you develop and maintain positive
 Minimal requirements for running the app:
 
 - docker
-
-If you want to access the app from outside your local network, you will need:
-
 - ngrok
 - npm
 - localtunnel npm package
+
 
 ## Installation
 
@@ -117,14 +115,5 @@ curl -X POST -H "Content-Type: application/json" -d '{"url": $LINK}' "https://ap
    - Enter any name for the button
    - If you're on test server and running the app locally enter http://127.0.0.1:3000 as the menu button link
    - Otherwise, enter your ngrok URL
-2. Configure "book" Web App
-   - Send `/newapp`
-   - select your bot
-   - Enter any title
-   - Enter any description
-   - Upload any image file with 640x360px
-   - Send /empty for GIF
-   - Send http://127.0.0.1:3000/newEvent or `your_ngrok_url/newEvent` as your `Web App Url`, depending on your environment
-   - Send `book` as a short name for the app
 
 And your app now should be fully set up and ready for testing!
