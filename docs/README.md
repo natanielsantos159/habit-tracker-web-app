@@ -9,9 +9,6 @@ Habit Tracker is a simple bot designed to help you develop and maintain positive
 Minimal requirements for running the app:
 
 - docker
-
-If you want to access the app from outside your local network, you will need:
-
 - ngrok
 - npm
 - localtunnel npm package
