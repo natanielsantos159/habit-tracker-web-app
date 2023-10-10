@@ -10,6 +10,7 @@ import myTheme from "./styles/theme"
 import NewHabit from './routes/NewHabit';
 import { withTelegramWebApp } from './components/TelegramWebApp';
 import HabitDetail from './routes/HabitDetail';
+import EditHabit from './routes/EditHabit';
 
 const theme = extendTheme(myTheme)
 
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/habits/:habitId",
         element: <HabitDetail />,
+      },
+      {
+        path: "/habits/:habitId/edit",
+        element: <EditHabit />,
       }
     ]
   },

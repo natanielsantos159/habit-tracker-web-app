@@ -1,78 +1,88 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Input, Container, Text, SimpleGrid, Button, Box, Flex, useRadioGroup, useToast } from '@chakra-ui/react';
 import IconsModal from '../components/IconsModal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTelegramWebApp } from '../context/TelegramWebAppContext';
 import RadioColor from '../components/RadioColor';
 import { HabitsContext } from '../context/HabitsContext';
 import { weekDays, habitColors } from '../consts/consts';
 
-function NewHabit() {
-  const [name, setName] = useState('');
-  const [currentIcon, setCurrentIcon] = useState('bookmark');
-  const [color, setColor] = useState('var(--tg-theme-button-color)');
-  const [selectedWeekDays, setSelectedWeekDays] = useState([
-    'Mon', 'Tue', 'Wed', 'Thu', 'Fri',
-  ]);
+function EditHabit() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentHabit = location.state.habitInfo;
+  const { updateHabit } = useContext(HabitsContext);
+  const [name, setName] = useState(currentHabit.name || '');
+  const [currentIcon, setCurrentIcon] = useState(currentHabit.icon);
+  const [color, setColor] = useState(currentHabit.color);
+  const [selectedWeekDays, setSelectedWeekDays] = useState(currentHabit.selectedWeekDays);
   const toast = useToast();
   const { webApp } = useTelegramWebApp();
-  const { saveHabit } = useContext(HabitsContext);
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'habitColor',
-    defaultValue: 'var(--tg-theme-button-color)',
+    defaultValue: currentHabit.color,
     onChange: setColor,
-  })
+  });
+
   const group = getRootProps();
 
   useEffect(() => {
+    if (!location?.state?.habitInfo) {
+      navigate('/');
+    }
     if (!webApp.isExpanded) {
       webApp.expand();
     }
     if (!webApp.BackButton.isVisible) {
       webApp.BackButton.show()
-      webApp.BackButton.onClick(() => {
-        navigate('/');
-      })
     }
+    const backBtnCb = () => {
+      webApp.showConfirm("Are you sure you want to discard your changes?", (answer) => {
+        if (answer === true) navigate(`/habits/${currentHabit.id}`);
+      })
+    };
+    webApp.BackButton.onClick(backBtnCb)
 
     webApp.MainButton.setParams({
       color: "#6b6767",
-      text: 'Save Habit',
+      text: 'Save changes',
       is_visible: true,
       is_active: false,
     });
 
+    webApp.enableClosingConfirmation()
+
     // This will be called when the component is unmounted
     return () => {
-      if (webApp.BackButton.isVisible) {
-        webApp.BackButton.hide();
-      }
+      // Removes the previous Back Button callback
+      webApp.BackButton.offClick(backBtnCb);
       if (webApp.MainButton.isVisible) {
         webApp.MainButton.hide();
       }
     }
   }, []);
 
-  const handleSaveHabit = async ({ name, icon, color, selectedWeekDays}) => {
-    try {
-      await saveHabit({
-        name,
-        icon,
-        color,
-        selectedWeekDays,
-      });
-      navigate('/', { state: { newHabit: true }});
-    } catch (err) {
-      toast({
-        title: 'Error',
-        description: `Sorry, an error occurred: ${err.message}`,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
+  const handleSaveHabit = ({ id, name, icon, color, selectedWeekDays}) => {
+    updateHabit({
+      id,
+      name,
+      icon,
+      color,
+      selectedWeekDays,
+    })
+      .then(() => {
+        navigate(`/habits/${currentHabit.id}`, { state: { edited: true } });
       })
-    }
+      .catch((err) => {
+        toast({
+          title: 'Error',
+          description: `Sorry, an error occurred: ${err.message}`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          })
+      })
   }
 
   useEffect(() => {
@@ -81,20 +91,20 @@ function NewHabit() {
     if (formIsValid && webApp.MainButton.isActive === false) {
       webApp.MainButton.setParams({
         is_active: true,
-        text: 'Save Habit',
+        text: 'Save changes',
         color: false, // Setting to false so the theme color is used
       });
     } else if (!formIsValid && webApp.MainButton.isActive) {
       webApp.MainButton.setParams({
         is_active: false,
-        text: 'Save Habit',
+        text: 'Save changes',
         color: "#6b6767",
       });
     }
 
     // Updates main button onClick function with the current state 
     const mainButtonCb = () => handleSaveHabit({
-      name, icon: currentIcon, color, selectedWeekDays
+      id: currentHabit.id, name, icon: currentIcon, color, selectedWeekDays
     });
     webApp.MainButton.onClick(mainButtonCb);
 
@@ -118,7 +128,7 @@ function NewHabit() {
 
   return (
     <Container>
-      <Text fontSize="2xl" textAlign="center" css={{ fontWeight: 700 }} paddingY="10">New habit</Text>
+      <Text fontSize="2xl" textAlign="center" css={{ fontWeight: 700 }} paddingY="10">Edit habit</Text>
 
       <Flex gap={3} alignItems="center" marginY="3">
         <Box>
@@ -131,6 +141,7 @@ function NewHabit() {
             placeholder='e.g. Meditate for 15 minutes'
             size="sm"
             value={name}
+            type="text"
             onChange={(event) => setName(event.target.value)}
           />
         </Box>
@@ -163,4 +174,4 @@ function NewHabit() {
   );
 }
 
-export default NewHabit;
+export default EditHabit;

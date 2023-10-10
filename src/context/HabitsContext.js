@@ -38,6 +38,21 @@ export function HabitsContextProvider({children}) {
     await cloudStorage.setArray(`${newHabit.id}_failed_history`, []);
   }
 
+  const updateHabit = async (habitInfo) => {
+    const { id, name, icon, color, selectedWeekDays } = habitInfo;
+    const newValue = { id, name, icon, color, selectedWeekDays };
+    const filterCb = ({id: habitId}) => habitId === id;
+    await cloudStorage.updateArrayItem('habits', newValue, filterCb);
+    let newArray = [...habits];
+    newArray = newArray.map((habit) => {
+      if (habit.id === id) {
+        return { id, name, icon, color, selectedWeekDays };
+      }
+      return habit;
+    });
+    setHabits(newArray);
+  }
+
   const deleteHabit = async (habitId) => {
     await cloudStorage.removeArrayItem('habits', ({id}) => id === habitId);
     await cloudStorage.removeItems(`${habitId}_success_history`, `${habitId}_failed_history`);
@@ -116,6 +131,7 @@ export function HabitsContextProvider({children}) {
     getHabitHistory,
     saveHabit,
     getHabit,
+    updateHabit,
     deleteHabit,
     history,
   }
