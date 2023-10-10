@@ -17,7 +17,6 @@ function CalendarDays ({ activeDate, onClick }) {
 
   for (let day = 0; day < 42; day++) {
     if (day === 0 && weekdayOfFirstDay === 0) {
-
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() - 6);
     } else if (day === 0) {
       firstDayOfMonth.setDate(
@@ -62,7 +61,7 @@ function CalendarDays ({ activeDate, onClick }) {
           <GridItem
             h="42px"
             position="relative"
-            border={`0.1px solid (--var-tg-theme-bg-color)`}
+            border={`0.1px solid var(--tg-theme-bg-color)`}
             bg={
               day.currentMonth && day.selected
                 ? "var(--tg-theme-button-color)"

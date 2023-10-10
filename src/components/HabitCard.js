@@ -82,6 +82,7 @@ function HabitCard({ habitInfo }) {
           aria-label='See Calendar'
           variant='ghost'
           _hover={{ background: 'transparent' }}
+          fontSize="15px"
         />
         <IconButton
           icon={<DeleteIcon stroke="#f54561" />}
@@ -89,6 +90,7 @@ function HabitCard({ habitInfo }) {
           aria-label='Delete Habit'
           variant='ghost'
           _hover={{ background: 'transparent' }}
+          fontSize="15px"
         />
       </Flex>
       <Grid

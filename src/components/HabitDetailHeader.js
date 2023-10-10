@@ -73,6 +73,7 @@ function HabitDetailHeader(props) {
               aria-label='Edit Habit'
               variant='ghost'
               _hover={{ background: 'transparent' }}
+              fontSize="15px"
             />
             <IconButton
               icon={<DeleteIcon stroke="#f54561" />}
@@ -80,6 +81,7 @@ function HabitDetailHeader(props) {
               aria-label='Delete Habit'
               variant='ghost'
               _hover={{ background: 'transparent' }}
+              fontSize="15px"
             />
           </Flex>
         )}

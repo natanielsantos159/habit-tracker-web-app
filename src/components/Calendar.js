@@ -18,7 +18,7 @@ function Calendar ({activeDate, onDateClick }) {
       >
         <CalendarHeader activeDate={activeDate} onClick={onDateClick} />
         <SimpleGrid columns={7} spacing={0} >
-          { weekDays.map((day) => (
+          { ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
             <Box
               key={day}
               display="flex"

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Text, Card, Heading, CardHeader, CardBody, CardFooter, Button, useToast } from "@chakra-ui/react";
-import { months } from '../consts/consts';
+import { months, weekDays } from '../consts/consts';
 import DayStateIcon from './DayStateIcon';
 import { HabitsContext } from '../context/HabitsContext';
 import { CalendarContext } from '../context/CalendarContext';
@@ -32,6 +32,10 @@ function ChangeDayStateCard({ activeDate }) {
     } else {
       return false;
     }
+  }
+
+  if (!currentHabit.selectedWeekDays.includes(weekDays[activeDate.getDay()])) {
+    return null;
   }
   return (
     <Card
