@@ -13,6 +13,7 @@ Minimal requirements for running the app:
 - npm
 - localtunnel npm package
 
+
 ## Installation
 
 1. Clone the repository (or download the repository from github as archive) and cd into it:
