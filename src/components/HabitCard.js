@@ -8,6 +8,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { ReactComponent as DeleteIcon} from '../assets/delete.svg';
+import { ReactComponent as CalendarIcon} from '../assets/calendar.svg';
 import { useState, useContext } from 'react';
 import { getWeekDates } from '../utils/getWeekDates';
 import HabitIcon from './HabitIcon';
@@ -76,6 +77,13 @@ function HabitCard({ habitInfo }) {
         >{name}</Text>
         <IconButton
           marginLeft="auto"
+          icon={<CalendarIcon stroke="var(--tg-theme-text-color)" />}
+          onClick={handleHabitCardClick}
+          aria-label='See Calendar'
+          variant='ghost'
+          _hover={{ background: 'transparent' }}
+        />
+        <IconButton
           icon={<DeleteIcon stroke="#f54561" />}
           onClick={handleDeleteHabit}
           aria-label='Delete Habit'
