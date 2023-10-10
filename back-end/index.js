@@ -15,7 +15,7 @@ console.log("Bot is running...");
 app.use(bodyParser.json());
 const testString = ENV === 'test' ? '/test' : '';
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
     const chatId = req.body.message.chat.id;
     const message = req.body.message.text;
     if (message.match(/\/start/gi)) {
