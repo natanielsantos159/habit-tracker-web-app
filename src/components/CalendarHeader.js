@@ -32,6 +32,7 @@ const CalendarHeader = ({ activeDate, onClick }) => {
         </Text>
         <ButtonNext activeDate={activeDate} onClick={onClick} />
       </Box>
+
     </Box>
   );
 };

@@ -64,7 +64,11 @@ function HabitCard({ habitInfo }) {
         gap="4"
         alignItems="center"
       >
-        <IconButton bg={color} icon={<HabitIcon iconName={icon} fill="var(--tg-theme-button-text-color)" />} />
+        <IconButton
+          bg={color}
+          onClick={handleHabitCardClick}
+          icon={<HabitIcon iconName={icon} fill="var(--tg-theme-button-text-color)" />}
+        />
         <Text
           onClick={handleHabitCardClick}
           fontSize="xl"
@@ -87,7 +91,12 @@ function HabitCard({ habitInfo }) {
         placeItems="center"
       >
         {!isLoading && weekDates.map(({ day, date }) => {
-          if (selectedWeekDays.includes(day) === false) return (<GridItem></GridItem>);
+          if (selectedWeekDays.includes(day) === false) return (
+            <GridItem textColor="var(--tg-theme-hint-color)" fontSize="xs">
+              {day}
+              <Box height="20px"></Box>
+            </GridItem>
+          );
           let success;
           if (habitHistory.successDays?.includes(date)) success = true;
           if (habitHistory.failedDays?.includes(date)) success = false;

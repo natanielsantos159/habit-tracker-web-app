@@ -62,7 +62,7 @@ function CalendarDays ({ activeDate, onClick }) {
           <GridItem
             h="42px"
             position="relative"
-            border={`0.1px solid #F2F2F2`}
+            border={`0.1px solid (--var-tg-theme-bg-color)`}
             bg={
               day.currentMonth && day.selected
                 ? "var(--tg-theme-button-color)"

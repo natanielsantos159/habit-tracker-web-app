@@ -39,15 +39,14 @@ function ChangeDayStateCard({ activeDate }) {
       bg="var(--tg-theme-secondary-bg-color)"
       textColor="var(--tg-theme-text-color)"
       width="95vw"
-      boxShadow={`0 0 99px 0px var(--tg-theme-secondary-bg-color)`}
     >
       <CardHeader>
         <Heading size='md'>{`${months[activeDate.getMonth()]} ${activeDate.getDate()}, ${activeDate.getFullYear()}`}</Heading>
       </CardHeader>
-      <CardBody> 
+      <CardBody paddingY="3"> 
         <Text>Did you develop that habit on that day?</Text>
       </CardBody>
-      <CardFooter gap={3}>
+      <CardFooter gap={3} paddingY="3">
         <Button 
           variant={getDayStatus(activeDate) ? "solid" : "outline"}
           leftIcon={<DayStateIcon  isDone={true}/>}
