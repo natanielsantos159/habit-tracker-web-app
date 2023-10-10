@@ -15,8 +15,8 @@ export function HabitsContextProvider({children}) {
       .then((response) => {
         setHabits(response);
         getMultipleHistories(response.map(({id}) => id))
-          .then((response) => {
-            setHistory(response);
+          .then((res) => {
+            setHistory(res);
             setIsLoading(false);
           });
       });

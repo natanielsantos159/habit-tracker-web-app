@@ -1,35 +1,10 @@
-import { useState, useEffect, useContext } from "react";
-import { Text, GridItem, Grid, useToast } from '@chakra-ui/react';
+import { useContext } from "react";
+import { Text, GridItem, Grid } from '@chakra-ui/react';
 import DayStateIcon from './DayStateIcon';
-import { HabitsContext } from '../context/HabitsContext';
-import { useParams } from 'react-router-dom';
+import { CalendarContext } from '../context/CalendarContext';
 
 function CalendarDays ({ activeDate, onClick }) {
-  const { getHabitHistory, history } = useContext(HabitsContext);
-  const [habitHistory, setHabitHistory] = useState();
-  const { habitId } = useParams();
-  const toast = useToast();
-
-  useEffect(() => {
-    const foundHistory = history.find(({id}) => habitId === id);
-    if (foundHistory) {
-      setHabitHistory(foundHistory);
-    } else {
-      getHabitHistory(habitId)
-        .then((res) => {
-          setHabitHistory(res);
-        })
-        .catch((err) => {
-          toast({
-            title: 'Error',
-            description: `Sorry, an error occurred: ${err.message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          })
-        })
-    }
-  }, []);
+  const { currentHabitHistory } = useContext(CalendarContext);
 
   let firstDayOfMonth = new Date(
     activeDate.getFullYear(),
@@ -63,12 +38,13 @@ function CalendarDays ({ activeDate, onClick }) {
 
     currentDays.push(calendarDay);
   }
+
   const getDayStatus = (calendarDay) => {
     // YYYY-MM-DD format
     const dateString = new Date(calendarDay.date).toISOString().split('T')[0];
-    if (habitHistory.successDays.includes(dateString)) {
+    if (currentHabitHistory.successDays.includes(dateString)) {
       return true;
-    } else if (habitHistory.failedDays.includes(dateString)) {
+    } else if (currentHabitHistory.failedDays.includes(dateString)) {
       return false;
     } else {
       return undefined;
@@ -80,7 +56,7 @@ function CalendarDays ({ activeDate, onClick }) {
       templateColumns='repeat(7, 1fr)'s
       boxSizing="border-box"
     >
-      { habitHistory && currentDays.map((day) => {
+      { currentHabitHistory && currentDays.map((day) => {
         const dayState = getDayStatus(day);
         return (
           <GridItem
@@ -108,7 +84,7 @@ function CalendarDays ({ activeDate, onClick }) {
               fontSize="sm"
               opacity={!day.currentMonth ? 0.3 : 1}
             >
-              {`${day.number}.`}
+              {day.number}
             </Text>
           </GridItem>
         );

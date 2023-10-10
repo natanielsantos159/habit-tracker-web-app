@@ -1,39 +1,18 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, { useContext } from 'react';
 import { Text, Card, Heading, CardHeader, CardBody, CardFooter, Button, useToast } from "@chakra-ui/react";
 import { months } from '../consts/consts';
 import DayStateIcon from './DayStateIcon';
 import { HabitsContext } from '../context/HabitsContext';
-import { useParams } from 'react-router-dom';
+import { CalendarContext } from '../context/CalendarContext';
 
 function ChangeDayStateCard({ activeDate }) {
-  const { getHabitHistory, history, updateDayHabitStatus } = useContext(HabitsContext);
-  const [habitHistory, setHabitHistory] = useState();
-  const { habitId } = useParams();
+  const { updateDayHabitStatus } = useContext(HabitsContext);
   const toast = useToast();
+  const { currentHabitHistory, currentHabit } = useContext(CalendarContext);
 
-  useEffect(() => {
-    const foundHistory = history.find(({id}) => habitId === id);
-    if (foundHistory) {
-      setHabitHistory(foundHistory);
-    } else {
-      getHabitHistory(habitId)
-        .then((res) => {
-          setHabitHistory(res);
-        })
-        .catch((err) => {
-          toast({
-            title: 'Error',
-            description: `Sorry, an error occurred: ${err.message}`,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          })
-        })
-    }
-  }, []);
-
-  const handleChangeClik = (isSuccess) => {
-    updateDayHabitStatus(isSuccess)
+  const handleChangeClick = ({ success }) => {
+    const date = activeDate.toISOString().split('T')[0];
+    updateDayHabitStatus({ habitId: currentHabit.id, date, success })
       .catch((err) => {
         toast({
           title: 'Error',
@@ -41,14 +20,14 @@ function ChangeDayStateCard({ activeDate }) {
           status: 'error',
           duration: 5000,
           isClosable: true,
-        })
+        });
       })
   }
   
   const getDayStatus = (calendarDay) => {
     // YYYY-MM-DD format
     const dateString = new Date(calendarDay).toISOString().split('T')[0];
-    if (habitHistory?.successDays?.includes(dateString)) {
+    if (currentHabitHistory?.successDays?.includes(dateString)) {
       return true;
     } else {
       return false;
@@ -72,14 +51,14 @@ function ChangeDayStateCard({ activeDate }) {
         <Button 
           variant={getDayStatus(activeDate) ? "solid" : "outline"}
           leftIcon={<DayStateIcon  isDone={true}/>}
-          onClick={() => handleChangeClik(true)}
+          onClick={() => handleChangeClick({ success: true })}
         >
           Yes
         </Button>
         <Button 
-          variant={getDayStatus(activeDate) ? "solid" : "outline"}
+          variant={!getDayStatus(activeDate) ? "solid" : "outline"}
           leftIcon={<DayStateIcon isDone={false}/>}
-          onClick={() => handleChangeClik(false)}
+          onClick={() => handleChangeClick({ success: false })}
         >
           No
         </Button>

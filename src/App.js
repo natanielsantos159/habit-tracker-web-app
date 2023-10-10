@@ -5,6 +5,7 @@ import { HabitsContextProvider } from './context/HabitsContext';
 
 function App() {
   const { isReady } = useTelegramWebApp();
+
   return (
     <Flex
       flexDirection="column"
@@ -15,7 +16,9 @@ function App() {
       textColor="var(--tg-theme-text-color)"
     >
       { isReady ? (
-        <HabitsContextProvider><Outlet /></HabitsContextProvider>
+        <HabitsContextProvider>          
+          <Outlet />
+        </HabitsContextProvider>
       ) : <Spinner size='sm' /> }
     </Flex>
   );
