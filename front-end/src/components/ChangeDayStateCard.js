@@ -34,7 +34,7 @@ function ChangeDayStateCard({ activeDate }) {
     }
   }
 
-  if (!currentHabit.selectedWeekDays.includes(weekDays[activeDate.getDay()])) {
+  if (!currentHabit?.selectedWeekDays?.includes(weekDays[activeDate.getDay()])) {
     return null;
   }
   return (

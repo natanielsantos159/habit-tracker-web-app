@@ -3,7 +3,7 @@ import axios from "axios";
 import express from 'express'
 const app = express();
 import bodyParser from 'body-parser';
-const port = 5000;
+const port = 80;
 const apiUrl = 'https://api.telegram.org/bot';
 
 config();
@@ -20,8 +20,8 @@ app.post('/', async (req, res) => {
     const message = req.body.message.text;
     if (message.match(/\/start/gi)) {
         await axios.post(`${apiUrl}${TOKEN}${testString}/sendMessage`, {
-            chat_id: msg.chat.id,
-            text: "Welcome to Habit Tracker, a simple bot designed to help you develop and maintain positive habits in your daily life.",
+            chat_id: chatId,
+            text: "Welcome to Habit Tracker \n\n a simple bot designed to help you develop and maintain positive habits in your daily life.",
             reply_markup: {
                 inline_keyboard: [[{ text: "Launch App 🚀", url: process.env.WEB_APP_URL }]],
             },
